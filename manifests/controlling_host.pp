@@ -46,6 +46,7 @@ class lxc::controlling_host ($ensure = "present",
 	}
 	$mtpt = $lsbdistcodename ? {
 		"oneiric" => "/sys/fs/cgroup",
+		"precise" => "/sys/fs/cgroup",
 		default => "/cgroup",
 	}
 	mount {
