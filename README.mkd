@@ -5,4 +5,7 @@ Puppet Module to manage Linux container (lxc).
 ## Dependencies
 
  * puppetlabs stdlib (for file\_line)
+ * common resources
+   * https://github.com/puppet-modules/puppet-common
+   * see http://projects.puppetlabs.com/projects/1/wiki/simple\_text\_patterns
 

@@ -90,6 +90,7 @@ define lxc::vm (
         ensure => absent;
 
       "send host-name \"${h_name}\";":
+        line => "send host-name \"${h_name}\";",
         file => "${c_path}/rootfs/etc/dhcp/dhclient.conf";
     }
 
