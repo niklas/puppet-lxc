@@ -28,6 +28,15 @@ class lxc::controlling_host ($ensure = "present",
 			mode => 555 ;
 	}
 
+
+	replace {
+		'lxc debootstrap components':
+			file        => '/usr/lib/lxc/templates/lxc-debian',
+			pattern     => 'debootstrap --verbose',
+			replacement => 'debootstrap --components=main,universe --verbose',
+			subscribe   => Package['lxc']
+	}
+
         file_line {
                 'enable cgroup memory':
                         line   => 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT cgroup_enable=memory"',
