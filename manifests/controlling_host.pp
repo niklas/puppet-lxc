@@ -27,20 +27,22 @@ class lxc::controlling_host ($ensure = "present",
 			content => template("lxc/build_vm.erb"),
 			mode => 555 ;
 
-		'/etc/default/grub' :
-			source => "puppet:///modules/lxc/etc_default_grub",
-			mode => 444 ;
-
 		"${mdir}/templates/lxc-debian" :
 			recurse => true,
 			content => template("lxc/lxc-debian.erb"),
 			require => File["$mdir/templates"] ;
 	}
+
+        file_line {
+                'enable cgroup memory':
+                        line   => 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT cgroup_enable=memory"',
+                        path   => '/etc/default/grub';
+        }
 	exec {
 		"/usr/sbin/update-grub" :
 			command => "/usr/sbin/update-grub",
 			refreshonly => true,
-			subscribe => File["/etc/default/grub"] ;
+			subscribe => File_line["enable cgroup memory"] ;
 	}
 	$mtpt = $lsbdistcodename ? {
 		"oneiric" => "/sys/fs/cgroup",

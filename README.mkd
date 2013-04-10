@@ -2,3 +2,7 @@
 
 Puppet Module to manage Linux container (lxc).
 
+## Dependencies
+
+ * puppetlabs stdlib (for file\_line)
+
