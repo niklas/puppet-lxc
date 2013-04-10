@@ -100,6 +100,7 @@ define lxc::vm (
     exec { "etc_hostname: ${h_name}":
       command     => "echo ${h_name} > ${c_path}/rootfs/etc/hostname",
       subscribe   => Exec["create ${h_name} container"],
+      timeout     => 1200, # 20 minutes
       refreshonly => true,
     }
 
