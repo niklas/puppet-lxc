@@ -26,11 +26,6 @@ class lxc::controlling_host ($ensure = "present",
 		'/usr/local/bin/build_vm' :
 			content => template("lxc/build_vm.erb"),
 			mode => 555 ;
-
-		"${mdir}/templates/lxc-debian" :
-			recurse => true,
-			content => template("lxc/lxc-debian.erb"),
-			require => File["$mdir/templates"] ;
 	}
 
         file_line {

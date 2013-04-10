@@ -13,6 +13,7 @@ define lxc::vm (
   $autorun         = true,
   $bridge          = "${lxc::controlling_host::bridge}",
   $addpackages     = '',
+  $mirror          = 'http://ftp.de.debian.org/debian',
   $autostart       = true) {
   require 'lxc::controlling_host'
 
@@ -57,13 +58,15 @@ define lxc::vm (
     }
   }
 
+  # FIXME unused - better install backes through puppet?
   if $addpackages != '' {
     $addpkg = "-a ${addpackages}"
   }
 
   if $ensure == "present" {
     exec { "create ${h_name} container":
-      command     => "/bin/bash ${lxc::mdir}/templates/lxc-debian -p ${c_path} -n ${h_name} -d ${distrib} ${addpkg}",
+      environment => [ "MIRROR=${mirror}", "SUITE=${distrib}" ],
+      command     => "/bin/bash /usr/lib/lxc/templates/lxc-debian -p ${c_path} -n ${h_name}",
       require     => File["${c_path}/preseed.cfg"],
       refreshonly => false,
       creates     => "${c_path}/config",
