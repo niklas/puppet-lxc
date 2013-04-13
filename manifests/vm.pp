@@ -26,16 +26,11 @@ define lxc::vm (
   }
 
   file {
-    "${c_path}":
-      ensure => $ensure ? {
-        "present" => "directory",
-        default   => "absent"
-      } ;
-
     "${c_path}/preseed.cfg":
       owner   => "root",
       group   => "root",
       mode    => 0644,
+      require => Exec["create ${h_name} container"],
       content => template("lxc/preseed.cfg.erb");
   }
 
