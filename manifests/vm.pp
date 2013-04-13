@@ -62,6 +62,7 @@ define lxc::vm (
       command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
       refreshonly => false,
       creates     => "${c_path}/config",
+      require     => Package['lxc'],
       logoutput   => true,
     }
 
