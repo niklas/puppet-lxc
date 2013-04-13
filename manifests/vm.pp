@@ -60,7 +60,6 @@ define lxc::vm (
   if $ensure == "present" {
     exec { "create ${h_name} container":
       command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
-      require     => File["${c_path}/preseed.cfg"],
       refreshonly => false,
       creates     => "${c_path}/config",
       logoutput   => true,
