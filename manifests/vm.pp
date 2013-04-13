@@ -9,11 +9,10 @@ define lxc::vm (
   $container_root  = "/var/lib/lxc",
   $ensure          = "present",
   $mainuser        = '',
-  $mainuser_sshkey = '',
+  $mainuser_sshkey_path = '',
   $autorun         = true,
   $bridge          = "${lxc::controlling_host::bridge}",
   $addpackages     = '',
-  $mirror          = 'http://ftp.de.debian.org/debian',
   $autostart       = true) {
   require 'lxc::controlling_host'
 
@@ -65,43 +64,21 @@ define lxc::vm (
 
   if $ensure == "present" {
     exec { "create ${h_name} container":
-      environment => [ "MIRROR=${mirror}", "SUITE=${distrib}" ],
-      command     => "/bin/bash /usr/lib/lxc/templates/lxc-debian -p ${c_path} -n ${h_name}",
+      command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
       require     => File["${c_path}/preseed.cfg"],
       refreshonly => false,
       creates     => "${c_path}/config",
       logoutput   => true,
     }
 
-    Line {
-      require => Exec["create ${h_name} container"],
-      file    => "${c_path}/config",
-    }
-
     Replace {
       require => Exec["create ${h_name} container"], }
 
     line {
-      "mac: ${mac_r}":
-        line => "lxc.network.hwaddr = ${mac_r}";
-
-      "bridge: {${mac_r}:${lxc::controlling_host::bridge}":
-        line => "lxc.network.link = ${bridge}";
-
-      "pair: {${mac_r}:${h_name}":
-        line => "lxc.network.veth.pair = veth_${h_name}",
-        ensure => absent;
-
       "send host-name \"${h_name}\";":
         line => "send host-name \"${h_name}\";",
+        require => Exec["create ${h_name} container"],
         file => "${c_path}/rootfs/etc/dhcp/dhclient.conf";
-    }
-
-    exec { "etc_hostname: ${h_name}":
-      command     => "echo ${h_name} > ${c_path}/rootfs/etc/hostname",
-      subscribe   => Exec["create ${h_name} container"],
-      timeout     => 1200, # 20 minutes
-      refreshonly => true,
     }
 
     # # setting the root-pw
@@ -120,33 +97,10 @@ define lxc::vm (
       replacement => "PermitRootLogin no",
     }
 
-    if $mainuser != '' and $mainuser_sshkey != '' {
-      exec { "${h_name}::useradd_${mainuser}":
-        command     => "chroot ${c_path}/rootfs useradd -s /bin/bash -g users -G adm -c \"Admin user\" ${mainuser}",
-        subscribe   => Exec["create ${h_name} container"],
-        refreshonly => true,
-      }
-
-      line { "${h_name}::mongrify_sudoers":
-        line    => "%adm ALL=(ALL) NOPASSWD: ALL",
-        file    => "${c_path}/rootfs/etc/sudoers",
-        require => Exec["${h_name}::useradd_${mainuser}"],
-      }
-      # # create ssh dir for user
-      $ssh_dir = "${c_path}/rootfs/home/${mainuser}/.ssh"
-
-      exec { "${h_name}::sshkey_${mainuser}":
-        command     => "mkdir -p ${ssh_dir} && echo \"${mainuser_sshkey}\" > ${ssh_dir}/authorized_keys && chroot ${c_path}/rootfs chown -R ${mainuser}:users /home/${mainuser}",
-        subscribe   => Exec["${h_name}::useradd_${mainuser}"],
-        unless      => "test -e ${ssh_dir}/.ssh/authorized_keys",
-        refreshonly => true,
-      }
-
-      exec { "${h_name}::install-puppet":
-        command     => "sed -i -e 's/exit\\ 0//' ${c_path}/rootfs/etc/rc.local && echo 'apt-get -y update && apt-get  -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" -y install facter puppet' >>${c_path}/rootfs/etc/rc.local",
-        subscribe   => Exec["create ${h_name} container"],
-        refreshonly => true,
-      }
+    exec { "${h_name}::install-puppet":
+      command     => "sed -i -e 's/exit\\ 0//' ${c_path}/rootfs/etc/rc.local && echo 'apt-get -y update && apt-get  -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" -y install facter puppet' >>${c_path}/rootfs/etc/rc.local",
+      subscribe   => Exec["create ${h_name} container"],
+      refreshonly => true,
     }
 
     if $autostart {
