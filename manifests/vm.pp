@@ -4,7 +4,7 @@ define lxc::vm (
   $mac             = '',
   $gw              = '',
   $netmask         = "255.255.255.0",
-  $passwd,
+  $passwd          = '',
   $distrib         = "${lsbdistcodename}",
   $container_root  = "/var/lib/lxc",
   $ensure          = "present",
@@ -76,13 +76,15 @@ define lxc::vm (
         file => "${c_path}/rootfs/etc/dhcp/dhclient.conf";
     }
 
-    # # setting the root-pw
-    # echo "root:root" | chroot $rootfs chpasswd
-    exec { "set_rootpw: ${h_name}":
-      command     => "echo \"root:${passwd}\" | chroot ${c_path}/rootfs chpasswd",
-      refreshonly => true,
-      require     => Exec["create ${h_name} container"],
-      subscribe   => Exec["create ${h_name} container"],
+    if $passwd != '' {
+      # # setting the root-pw
+      # echo "root:root" | chroot $rootfs chpasswd
+      exec { "set_rootpw: ${h_name}":
+        command     => "echo \"root:${passwd}\" | chroot ${c_path}/rootfs chpasswd",
+        refreshonly => true,
+        require     => Exec["create ${h_name} container"],
+        subscribe   => Exec["create ${h_name} container"],
+      }
     }
 
     # # Disable root - login via ssh
