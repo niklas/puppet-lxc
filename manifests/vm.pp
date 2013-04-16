@@ -63,6 +63,7 @@ define lxc::vm (
       refreshonly => false,
       creates     => "${c_path}/config",
       require     => Package['lxc'],
+      timeout     => 1200,
       logoutput   => true,
     }
 
