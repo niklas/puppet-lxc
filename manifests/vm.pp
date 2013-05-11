@@ -58,11 +58,12 @@ define lxc::vm (
   }
 
   if $ensure == "present" {
+    file { $mainuser_sshkey_path: ensure => present, audit => all }
     exec { "create ${h_name} container":
       command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
       refreshonly => false,
       creates     => "${c_path}/config",
-      require     => Package['lxc'],
+      require     => [ Package['lxc'], File[$mainuser_sshkey_path] ],
       timeout     => 1200,
       logoutput   => true,
     }
