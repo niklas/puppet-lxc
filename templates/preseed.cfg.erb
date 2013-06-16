@@ -4,7 +4,7 @@
 linux-container linux-container/debconf-frontend select noninteractive
 #linux-container linux-container/debconf-priority select critical
 
-linux-container linux-container/distribution string <%= distrib %>
+linux-container linux-container/distribution string <%= @distrib %>
 linux-container linux-container/architecture select
 
 linux-container linux-container/mirror string http://ftp.de.debian.org/debian/
@@ -21,14 +21,14 @@ linux-container linux-container/late-command string
 # linux-container
 linux-container linux-container/enable boolean true
 linux-container linux-container/consoles string 6
-linux-container linux-container/hostname string <%= name %>
+linux-container linux-container/hostname string <%= @name %>
 
 linux-container linux-container/eth0/comment string The primary network interface
 linux-container linux-container/eth0/dhcp boolean true
-#linux-container linux-container/eth0/mac string <%= mac %>
-#linux-container linux-container/eth0/address string <%= ip %>
-#linux-container linux-container/eth0/broadcast string <%= ip %>
-linux-container linux-container/eth0/bridge string <%= bridge %>
+#linux-container linux-container/eth0/mac string <%= @mac %>
+#linux-container linux-container/eth0/address string <%= @ip %>
+#linux-container linux-container/eth0/broadcast string <%= @ip %>
+linux-container linux-container/eth0/bridge string <%= @bridge %>
 
 # additional packages
 linux-container linux-container/packages string puppet lsb-release cron
@@ -44,6 +44,6 @@ tzdata tzdata/Zones/Etc select UTC
 tzdata tzdata/Zones/Europe select Berlin
 
 # root password
-user-setup passwd/root-password string <%= passwd %>
-user-setup passwd/root-password-again string <%= passwd %>
+user-setup passwd/root-password string <%= @passwd %>
+user-setup passwd/root-password-again string <%= @passwd %>
 

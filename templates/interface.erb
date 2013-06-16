@@ -3,15 +3,15 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-<% if ip == "dhcp" -%>
+<% if @ip == "dhcp" -%>
 iface eth0 inet dhcp
 <% else -%>
 iface eth0 inet static
-	address <%= ip %>
-	netmask <%= netmask %>
-	broadcast <%= ip %>
-	post-up route add <%= gw %> dev eth0
-	post-up route add default gw <%= gw %>
-	post-down route del <%= gw %> dev eth0
-	post-down route del default gw <%= gw %>
+	address <%= @ip %>
+	netmask <%= @netmask %>
+	broadcast <%= @ip %>
+	post-up route add <%= @gw %> dev eth0
+	post-up route add default gw <%= @gw %>
+	post-down route del <%= @gw %> dev eth0
+	post-down route del default gw <%= @gw %>
 <% end -%>
