@@ -58,7 +58,7 @@ define lxc::vm (
   }
 
   if $ensure == "present" {
-    file { $mainuser_sshkey_path: ensure => present, audit => all }
+    file { $mainuser_sshkey_path: ensure => present, audit => [owner, group, mode] }
     exec { "create ${h_name} container":
       command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
       refreshonly => false,
