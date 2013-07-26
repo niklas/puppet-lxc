@@ -1,5 +1,6 @@
 class lxc::controlling_host ($ensure = "present",
 	$provider = "",
+  $start_containers = true,
 	$bridge) inherits lxc {
 
 	package {
@@ -12,7 +13,7 @@ class lxc::controlling_host ($ensure = "present",
 		group => root,
 	}
 	file{"/etc/default/lxc":
-		source => "puppet:///modules/lxc/etc_default_lxc",
+    content => template('lxc/etc_default_lxc.erb'),
 	}
 		
 	file {
