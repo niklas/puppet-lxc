@@ -11,7 +11,7 @@ define lxc::vm (
   $mainuser        = '',
   $mainuser_sshkey_path = '',
   $autorun         = true,
-  $bridge          = "${lxc::controlling_host::bridge}",
+  $bridge          = "${lxc::params::bridge}",
   $addpackages     = '',
   $autostart       = true) {
   require 'lxc::controlling_host'

@@ -1,7 +1,7 @@
 class lxc::controlling_host ($ensure = "present",
 	$provider = "",
   $start_containers = true,
-	$bridge) inherits lxc {
+	$bridge = $lxc::params::bridge) inherits lxc {
 
 	package {
 		["lxc", "lvm2", "bridge-utils", "debootstrap"] :
