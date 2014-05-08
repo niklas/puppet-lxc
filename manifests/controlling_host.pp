@@ -4,7 +4,7 @@ class lxc::controlling_host ($ensure = "present",
 	$bridge = $lxc::params::bridge) inherits lxc {
 
 	package {
-		["lxc", "lvm2", "bridge-utils", "debootstrap"] :
+		["lxc", "lvm2", "bridge-utils", "debootstrap", "cgroup-lite"] :
 			ensure => $ensure ;
 	}
 	File {
@@ -44,6 +44,10 @@ class lxc::controlling_host ($ensure = "present",
 	$mtpt = $lsbdistcodename ? {
 		"oneiric" => "/sys/fs/cgroup",
 		"precise" => "/sys/fs/cgroup",
+		"quantal" => "/sys/fs/cgroup",
+		"raring"  => "/sys/fs/cgroup",
+		"saucy"   => "/sys/fs/cgroup",
+		"trusty"  => "/sys/fs/cgroup",
 		default => "/cgroup",
 	}
 	mount {
