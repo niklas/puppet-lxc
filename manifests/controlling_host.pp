@@ -17,7 +17,7 @@ class lxc::controlling_host ($ensure = "present",
 	}
 		
 	file {
-		['/cgroup',"$mdir","$mdir/templates"] :
+		['/sys/fs/cgroup',"$mdir","$mdir/templates"] :
 			ensure => directory ;
 
 		'/etc/sysctl.d/ipv4_forward.conf' :
@@ -40,25 +40,6 @@ class lxc::controlling_host ($ensure = "present",
 			command => "/usr/sbin/update-grub",
 			refreshonly => true,
 			subscribe => File_line["enable cgroup memory"] ;
-	}
-	$mtpt = $lsbdistcodename ? {
-		"oneiric" => "/sys/fs/cgroup",
-		"precise" => "/sys/fs/cgroup",
-		"quantal" => "/sys/fs/cgroup",
-		"raring"  => "/sys/fs/cgroup",
-		"saucy"   => "/sys/fs/cgroup",
-		"trusty"  => "/sys/fs/cgroup",
-		default => "/cgroup",
-	}
-	mount {
-		'mount_cgroup' :
-			name => $mtpt,
-			atboot => true,
-			device => 'cgroup',
-			ensure => present,
-			fstype => 'cgroup',
-			options => 'defaults',
-			remounts => false ;
 	}
 }
 
