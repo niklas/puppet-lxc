@@ -5,7 +5,7 @@
 #
 
 echo "Creating LXC Container "
-echo -n "name : "
+echo -n "name : "
 read VM
 echo -n "Mac addr : "
 read MAC
@@ -21,15 +21,13 @@ out () {
 }
 
 mkdir -p /var/lib/lxc/$VM || out 1 "Could not create: /var/lib/lxc/$VM"
-#lvcreate -L 4G -n $VM vg00 || out 2 "impossible de créer le lv $VM"
-#mkreiserfs /dev/vg00/$VM || out 3 "impossible de formater en reiserfs"
 #echo "/dev/mapper/vg00-$VM   /var/lib/lxc/$VM       reiserfs        defaults        0       2" >> /etc/fstab
 #mount -a
 /usr/lib/lxc/templates/lxc-debian -p /var/lib/lxc/$VM -n $VM
 
 ln -s /var/lib/lxc/$VM/config /etc/lxc/auto/$VM
 
-# Calcul de la gateway par défaut
+# Determine default gateway
 <% if @provider == "ovh" %>
 GW=$(hostname -i | sed -e 's/\([^.]*$\)/254/g')
 <% else %>
