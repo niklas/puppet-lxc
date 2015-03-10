@@ -66,7 +66,7 @@ define lxc::vm (
       refreshonly => false,
       creates     => "${c_path}/config",
       require     => [ Package['lxc'], File[$mainuser_sshkey_path] ],
-      timeout     => 3600,
+      timeout     => 1200,
       logoutput   => true,
     }
 
