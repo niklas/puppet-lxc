@@ -8,11 +8,11 @@ define lxc::vm (
   $distrib         = "${lsbdistcodename}",
   $container_root  = "/var/lib/lxc",
   $ensure          = "present",
-  $mainuser        = '',
-  $mainuser_sshkey_path = '',
   $autorun         = true,
   $bridge          = "${lxc::params::bridge}",
   $addpackages     = '',
+  $arch            = "${architecture}",
+  $release         = '${lsbdistcodename}',
   $autostart       = true) {
   require 'lxc::controlling_host'
 
@@ -58,14 +58,11 @@ define lxc::vm (
   }
 
   if $ensure == "present" {
-    if !defined( File[$mainuser_sshkey_path] ) {
-      file { $mainuser_sshkey_path: ensure => present, audit => [owner, group, mode] }
-    }
     exec { "create ${h_name} container":
-      command     => "/usr/bin/lxc-create -n ${h_name} -t ubuntu -- --bindhome ${mainuser} --auth-key ${mainuser_sshkey_path}",
+      command     => "/usr/bin/lxc-create -n ${h_name} -t download -- --dist ${distrib} --release ${release} --arch ${arch}",
       refreshonly => false,
       creates     => "${c_path}/config",
-      require     => [ Package['lxc'], File[$mainuser_sshkey_path] ],
+      require     => [ Package['lxc'] ],
       timeout     => 1200,
       logoutput   => true,
     }
