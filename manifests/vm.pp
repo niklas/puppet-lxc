@@ -95,12 +95,6 @@ define lxc::vm (
       replacement => "PermitRootLogin no",
     }
 
-    exec { "${h_name}::install-puppet":
-      command     => "sed -i -e 's/exit\\ 0//' ${c_path}/rootfs/etc/rc.local && echo 'which puppet || (apt-get -y update && apt-get  -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" -y install facter puppet)' >>${c_path}/rootfs/etc/rc.local",
-      subscribe   => Exec["create ${h_name} container"],
-      unless      => "grep puppet ${c_path}/rootfs/etc/rc.local 2>/dev/null"
-    }
-
     if $autostart {
       exec { "/usr/bin/lxc-start -n ${h_name} -d":
         onlyif  => "/usr/bin/lxc-info -n ${h_name} 2>/dev/null | grep -q STOPPED",
