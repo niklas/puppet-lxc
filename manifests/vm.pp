@@ -12,7 +12,7 @@ define lxc::vm (
   $bridge          = "${lxc::params::bridge}",
   $addpackages     = '',
   $arch            = "${architecture}",
-  $release         = '${lsbdistcodename}',
+  $release         = "${lsbdistcodename}",
   $autostart       = true) {
   require 'lxc::controlling_host'
 
