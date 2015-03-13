@@ -14,4 +14,5 @@ iface eth0 inet static
 	post-up route add default gw <%= @gw %>
 	post-down route del <%= @gw %> dev eth0
 	post-down route del default gw <%= @gw %>
+	dns-nameservers 8.8.8.8 141.1.1.1
 <% end -%>
