@@ -5,7 +5,7 @@ define lxc::vm (
   $gw              = '',
   $netmask         = "255.255.255.0",
   $passwd          = '',
-  $distrib         = "${lsbdistcodename}",
+  $distrib         = 'ubuntu',
   $container_root  = "/var/lib/lxc",
   $ensure          = "present",
   $autorun         = true,
