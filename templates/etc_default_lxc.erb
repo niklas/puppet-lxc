@@ -2,14 +2,17 @@
 # Comment out to run the lxc init script
 RUN=yes
 
-# Directory containing the container configurations
-CONF_DIR=/etc/lxc
+# MIRROR to be used by ubuntu template at container creation:
+# Leaving it undefined is fine
+MIRROR="http://de.archive.ubuntu.com/ubuntu"
 
 # Start /etc/lxc/example.conf, /etc/lxc/autostart.conf, etc.
 #CONTAINERS="example autostart container"
-
-LXC_SHUTDOWN="stop"
-LXC_DIRECTORY="/var/lib/lxc"
-
-USE_LXC_BRIDGE="true"
+# LXC_AUTO - whether or not to start containers symlinked under
+# /etc/lxc/auto
 LXC_AUTO="<%= @start_containers %>"
+
+USE_LXC_BRIDGE="true"  # overridden in lxc-net
+[ -f /etc/default/lxc-net ] && . /etc/default/lxc-net
+
+LXC_SHUTDOWN_TIMEOUT=120
