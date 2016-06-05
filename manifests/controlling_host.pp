@@ -17,7 +17,7 @@ class lxc::controlling_host ($ensure = "present",
 	}
 		
 	file {
-		['/sys/fs/cgroup',"$mdir","$mdir/templates"] :
+		['/sys/fs/cgroup'] :
 			ensure => directory ;
 
 		'/etc/sysctl.d/ipv4_forward.conf' :
