@@ -5,9 +5,16 @@ class lxc::controlling_host (
   $bridge = $lxc::params::bridge) inherits lxc {
 
     package {
-      ["lxc", "lvm2", "bridge-utils", "debootstrap", "cgroup-lite"] :
+      ["lxc", "lvm2", "bridge-utils", "debootstrap"] :
         ensure => $ensure ;
     }
+    if ($os::family == "Ubuntu") {
+      package {
+        ["cgroup-lite"] :
+          ensure => $ensure ;
+      }
+    }
+
     File {
       ensure => $ensure,
       owner => root,
@@ -16,7 +23,7 @@ class lxc::controlling_host (
     file{"/etc/default/lxc":
       content => template('lxc/etc_default_lxc.erb'),
     }
-    
+
     file {
       ['/sys/fs/cgroup'] :
         ensure => directory ;
@@ -43,4 +50,3 @@ class lxc::controlling_host (
         subscribe => File_line["enable cgroup memory"] ;
     }
   }
-
