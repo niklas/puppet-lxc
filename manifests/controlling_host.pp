@@ -8,7 +8,7 @@ class lxc::controlling_host (
       ["lxc", "lvm2", "bridge-utils", "debootstrap"] :
         ensure => $ensure ;
     }
-    if ($os::family == "Ubuntu") {
+    if ($facts['os']['family'] == "Ubuntu") {
       package {
         ["cgroup-lite"] :
           ensure => $ensure ;
